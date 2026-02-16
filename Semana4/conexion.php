@@ -13,3 +13,4 @@ if (!$conn) {
     header("Location: errorconn.php");
     exit(); // Detenemos la ejecución del script
 }   
+?>

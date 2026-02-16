@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             VALUES ('$nombre', '$email', '$password')";
 
     if ($conn->query($sql) === TRUE) {
-        $mensaje = "Registro exitoso. <a href='login.php'>Iniciar sesión</a>";
+        $mensaje = "Registro exitoso ahora da clic en Volver al login.>Iniciar sesión</a>";
     } else {
         $mensaje = "Error: " . $conn->error;
     }
@@ -86,7 +86,7 @@ a:hover {
     </form>
 
     <p><?php echo $mensaje; ?></p>
-    <p><a href="login.php">Volver al login</a></p>
+    <p><a href="index.php">Volver al login</a></p>
 </div>
 
 </body>

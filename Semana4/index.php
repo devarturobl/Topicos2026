@@ -1,3 +1,33 @@
+<?php
+session_start();
+require 'conexion.php';
+
+$error = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $email = $conn->real_escape_string($_POST['email']);
+    $password = $_POST['password'];
+
+    $sql = "SELECT * FROM usuarios WHERE email='$email'";
+    $resultado = $conn->query($sql);
+
+    if ($resultado->num_rows == 1) {
+        $usuario = $resultado->fetch_assoc();
+
+        if (password_verify($password, $usuario['password'])) {
+            $_SESSION['usuario'] = $usuario['username'];
+            header("Location: bienvenida.php");
+            exit();
+        } else {
+            $error = "Contraseña incorrecta";
+        }
+    } else {
+        $error = "Usuario no encontrado";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -54,6 +84,10 @@ a:hover {
 
 <div class="form-container">
     <h2>Iniciar Sesión</h2>
+
+    <?php if($error): ?>
+        <p class="error"><?php echo $error; ?></p>
+    <?php endif; ?>
 
     <form method="POST">
         <input type="email" name="email" placeholder="Correo electrónico" required>
