@@ -1,11 +1,13 @@
 <?php
+include 'validate.php';
 include 'conexion.php';
+
 
 // 1. Obtener la tarea actual para mostrarla en el formulario
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $sql = "SELECT * FROM tareas WHERE id = $id";
-    $resultado = $conexion->query($sql);
+    $resultado = $conn->query($sql);
     $tarea = $resultado->fetch_assoc();
 }
 
@@ -17,11 +19,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $sql = "UPDATE tareas SET titulo = '$titulo', completado = $completado WHERE id = $id";
 
-    if ($conexion->query($sql) === TRUE) {
+    if ($conn->query($sql) === TRUE) {
         header("Location: index.php");
         exit();
     } else {
-        echo "Error actualizando: " . $conexion->error;
+        echo "Error actualizando: " . $conn->error;
     }
 }
 ?>

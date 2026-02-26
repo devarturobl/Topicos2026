@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $usuario = $resultado->fetch_assoc();
 
         if (password_verify($password, $usuario['password'])) {
-            $_SESSION['username'] = $usuario['username'];
+            $_SESSION['username'] = $usuario['email'];
             header("Location: bienvenida.php");
             exit();
         } else {

@@ -1,5 +1,7 @@
 <?php
+include 'validate.php';
 include 'conexion.php';
+
 
 // Verificamos si el formulario ha sido enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -7,14 +9,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!empty($titulo)) {
         // Preparamos la consulta SQL
-        $sql = "INSERT INTO tareas (titulo) VALUES ('$titulo')";
+        $sql = "INSERT INTO tareas (titulo, email_id) VALUES ('$titulo', '" . $_SESSION['username'] . "')";
 
-        if ($conexion->query($sql) === TRUE) {
+        if ($conn->query($sql) === TRUE) {
             // Si se guarda con éxito, regresamos al inicio
             header("Location: index.php");
             exit();
         } else {
-            echo "Error: " . $conexion->error;
+            echo "Error: " . $conn->error;
         }
     }
 }
