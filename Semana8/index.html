@@ -65,8 +65,8 @@ button:hover{
 
 <div class="container">
   <h2 id="titulo">Iniciar sesión</h2>
-
-  <input type="text" id="username" placeholder="Nombre de usuario" style="display:none;">
+  <input type="email" id="email" placeholder="Email Usuario" style="display:none;">
+  <input type="password" id="password" placeholder="Password" style="display:none;">
   <button onclick="accion()" id="btn">Login</button>
 
   <div class="toggle" onclick="cambiarModo()">
@@ -78,8 +78,8 @@ button:hover{
 
 <script>
 const supabase = supabase.createClient(
-  "https://TU_URL.supabase.co",
-  "TU_ANON_KEY"
+  "https://xomfvpoovjhrdmssrlck.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhvbWZ2cG9vdmpocmRtc3NybGNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NDQ1NDYsImV4cCI6MjA4OTUyMDU0Nn0.kVL1RVbmPDqTiewwb_ZHaOwcyhrCM9h8OzSivtcH774"
 );
 
 let modo = "login";
