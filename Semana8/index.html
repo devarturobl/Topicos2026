@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Chat App - Login</title>
+
+<style>
+body{
+  font-family: Arial;
+  background:#0f172a;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  margin:0;
+}
+
+.container{
+  background:#1e293b;
+  padding:30px;
+  border-radius:10px;
+  width:300px;
+  box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+h2{
+  text-align:center;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border:none;
+  border-radius:5px;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border:none;
+  border-radius:5px;
+  background:#38bdf8;
+  color:black;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#0ea5e9;
+}
+
+.toggle{
+  text-align:center;
+  margin-top:10px;
+  cursor:pointer;
+  color:#38bdf8;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2 id="titulo">Iniciar sesión</h2>
+
+  <input type="text" id="username" placeholder="Nombre de usuario" style="display:none;">
+  <button onclick="accion()" id="btn">Login</button>
+
+  <div class="toggle" onclick="cambiarModo()">
+    ¿No tienes cuenta? Regístrate
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<script>
+const supabase = supabase.createClient(
+  "https://TU_URL.supabase.co",
+  "TU_ANON_KEY"
+);
+
+let modo = "login";
+
+// Cambiar entre login y registro
+function cambiarModo(){
+  if(modo === "login"){
+    modo = "registro";
+    titulo.innerText = "Registrarse";
+    btn.innerText = "Crear cuenta";
+    username.style.display = "block";
+  } else {
+    modo = "login";
+    titulo.innerText = "Iniciar sesión";
+    btn.innerText = "Login";
+    username.style.display = "none";
+  }
+}
+
+// Acción principal
+async function accion(){
+  if(modo === "login"){
+    login();
+  } else {
+    registro();
+  }
+}
+
+// REGISTRO
+async function registro(){
+  const { data, error } = await supabase.auth.signUp({
+    email: email.value,
+    password: password.value
+  });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  // Guardar username en tabla profiles
+  await supabase.from("profiles").insert({
+    id: data.user.id,
+    username: username.value
+  });
+
+  alert("Usuario registrado");
+}
+
+// LOGIN
+async function login(){
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email.value,
+    password: password.value
+  });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  // Redirigir al chat
+  window.location.href = "chat.html";
+}
+</script>
+
+</body>
+</html>
