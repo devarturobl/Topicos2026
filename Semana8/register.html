@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Registro - Chat App</title>
+
+<style>
+body{
+  font-family: Arial;
+  background:#0f172a;
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  margin:0;
+}
+
+.container{
+  background:#1e293b;
+  padding:30px;
+  border-radius:10px;
+  width:320px;
+  box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+
+h2{
+  text-align:center;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin:10px 0;
+  border:none;
+  border-radius:5px;
+}
+
+button{
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:5px;
+  background:#22c55e;
+  color:black;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#16a34a;
+}
+
+.link{
+  text-align:center;
+  margin-top:10px;
+}
+
+a{
+  color:#38bdf8;
+  text-decoration:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>Crear cuenta</h2>
+  <input type="email" id="email" placeholder="Correo">
+  <input type="password" id="password" placeholder="Contraseña">
+
+  <button onclick="registrar()">Registrarse</button>
+
+  <div class="link">
+    <a href="index.html">¿Ya tienes cuenta? Inicia sesión</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const supabaseClient = window.supabase.createClient(
+  "https://xomfvpoovjhrdmssrlck.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhvbWZ2cG9vdmpocmRtc3NybGNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NDQ1NDYsImV4cCI6MjA4OTUyMDU0Nn0.kVL1RVbmPDqTiewwb_ZHaOwcyhrCM9h8OzSivtcH774"
+);
+
+async function registrar(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  if(!email || !password){
+    alert("Completa todos los campos");
+    return;
+  }
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email: email,
+    password: password
+  });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  // Guardar perfil
+  const { error: errorPerfil } = await supabaseClient
+    .from("profiles")
+    .insert({
+      id: data.user.id,
+      username: username,
+      email: email,
+      password: password
+    });
+
+  if(errorPerfil){
+    alert("Error al guardar perfil");
+    return;
+  }
+
+  alert("Registro exitoso");
+
+  // Redirigir al login
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>

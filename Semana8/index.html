@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>Chat App - Login</title>
-
-<style>
-body{
+    <meta charset="UTF-8">
+    <title>Chat App - Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body{
   font-family: Arial;
   background:#0f172a;
   color:white;
@@ -20,7 +20,7 @@ body{
   background:#1e293b;
   padding:30px;
   border-radius:10px;
-  width:300px;
+  width:320px;
   box-shadow:0 0 20px rgba(0,0,0,0.5);
 }
 
@@ -39,111 +39,84 @@ input{
 button{
   width:100%;
   padding:10px;
-  margin-top:10px;
   border:none;
   border-radius:5px;
-  background:#38bdf8;
+  background:#22c55e;
   color:black;
   font-weight:bold;
   cursor:pointer;
 }
 
 button:hover{
-  background:#0ea5e9;
+  background:#16a34a;
 }
 
-.toggle{
+.link{
   text-align:center;
   margin-top:10px;
-  cursor:pointer;
-  color:#38bdf8;
 }
-</style>
-</head>
 
+a{
+  color:#38bdf8;
+  text-decoration:none;
+}
+    </style>
+</head>
 <body>
 
 <div class="container">
-  <h2 id="titulo">Iniciar sesión</h2>
-  <input type="email" id="email" placeholder="Email Usuario" style="display:none;">
-  <input type="password" id="password" placeholder="Password" style="display:none;">
-  <button onclick="accion()" id="btn">Login</button>
+    <h2>Iniciar sesión</h2>
 
-  <div class="toggle" onclick="cambiarModo()">
-    ¿No tienes cuenta? Regístrate
-  </div>
+    <input type="email" id="email" placeholder="Correo">
+    <input type="password" id="password" placeholder="Contraseña">
+
+    <button onclick="login()">Entrar</button>
+
+    <div class="link" onclick="goRegister()">
+        ¿No tienes cuenta? Regístrate
+    </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
 <script>
-const supabase = supabase.createClient(
-  "https://xomfvpoovjhrdmssrlck.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhvbWZ2cG9vdmpocmRtc3NybGNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NDQ1NDYsImV4cCI6MjA4OTUyMDU0Nn0.kVL1RVbmPDqTiewwb_ZHaOwcyhrCM9h8OzSivtcH774"
-);
+    // 🔹 CONFIGURA ESTO
+    const SUPABASE_URL = "https://xomfvpoovjhrdmssrlck.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhvbWZ2cG9vdmpocmRtc3NybGNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5NDQ1NDYsImV4cCI6MjA4OTUyMDU0Nn0.kVL1RVbmPDqTiewwb_ZHaOwcyhrCM9h8OzSivtcH774";
 
-let modo = "login";
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Cambiar entre login y registro
-function cambiarModo(){
-  if(modo === "login"){
-    modo = "registro";
-    titulo.innerText = "Registrarse";
-    btn.innerText = "Crear cuenta";
-    username.style.display = "block";
-  } else {
-    modo = "login";
-    titulo.innerText = "Iniciar sesión";
-    btn.innerText = "Login";
-    username.style.display = "none";
-  }
-}
+    // 🔹 LOGIN
+    async function login() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
 
-// Acción principal
-async function accion(){
-  if(modo === "login"){
-    login();
-  } else {
-    registro();
-  }
-}
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+        });
 
-// REGISTRO
-async function registro(){
-  const { data, error } = await supabase.auth.signUp({
-    email: email.value,
-    password: password.value
-  });
+        if (error) {
+            alert("Error: " + error.message);
+        } else {
+            alert("Bienvenido!");
+            window.location.href = "chat.html"; // siguiente pantalla
+        }
+    }
 
-  if(error){
-    alert(error.message);
-    return;
-  }
+    // 🔹 IR A REGISTRO
+    function goRegister() {
+        window.location.href = "register.html";
+    }
 
-  // Guardar username en tabla profiles
-  await supabase.from("profiles").insert({
-    id: data.user.id,
-    username: username.value
-  });
+    // 🔹 SI YA ESTÁ LOGUEADO, REDIRIGIR
+    async function checkSession() {
+        const { data } = await supabaseClient.auth.getSession();
 
-  alert("Usuario registrado");
-}
+        if (data.session) {
+            window.location.href = "chat.html";
+        }
+    }
 
-// LOGIN
-async function login(){
-  const { error } = await supabase.auth.signInWithPassword({
-    email: email.value,
-    password: password.value
-  });
-
-  if(error){
-    alert(error.message);
-    return;
-  }
-
-  // Redirigir al chat
-  window.location.href = "chat.html";
-}
+    checkSession();
 </script>
 
 </body>
